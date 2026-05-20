@@ -36,13 +36,56 @@ This project proposes a robust multi-modal deep learning system that:
 
 ## 3. System Architecture
 
-User
-↓
-Frontend (Web/App)
-↓
-Backend (NestJS)
-↓
-AI Service (Python - FastAPI)
+```mermaid
+flowchart TD
+    User([👤 User]):::io --> Frontend["🖥️ Frontend<br/>Web / App"]
+    Frontend --> Backend["⚙️ Backend<br/>NestJS"]
+    Backend --> AIService["🐍 AI Service<br/>Python · FastAPI"]
+
+    subgraph AI_Core ["AI Service — Core Modules"]
+        direction TB
+
+        subgraph Encoders ["Feature Extraction"]
+            direction LR
+            ImgEncoder["🖼️ Image Encoder<br/>ConvNeXt"]
+            TxtEncoder["📝 Text Encoder<br/>XLM-RoBERTa"]
+        end
+
+        Fusion["🔀 Fusion Module<br/>Concatenation / Cross-Attention"]
+
+        subgraph Heads ["Prediction Heads"]
+            direction LR
+            Overall["⭐ Overall Score<br/>0 – 10"]
+            Factors["📊 Factor Scores<br/>Quality · Price · Appearance"]
+        end
+
+        subgraph XAI ["Explainability Module"]
+            direction LR
+            GradCAM["🔥 Grad-CAM<br/>Image Regions"]
+            Attn["💬 Attention Heatmap<br/>Text Evidence"]
+            SHAP["📈 SHAP / LIME<br/>Multi-modal Contribution"]
+        end
+
+        Agent["🤖 AI Agent<br/>Natural-Language Summary"]
+    end
+
+    AIService --> Encoders
+
+    ImgEncoder --> Fusion
+    TxtEncoder --> Fusion
+
+    Fusion --> Heads
+    ImgEncoder --> XAI
+    TxtEncoder --> XAI
+    Fusion --> XAI
+
+    Heads --> Agent
+    XAI --> Agent
+
+    Agent --> Output([📋 Explainable Quality Report]):::io
+
+    classDef io fill:#d4edda,stroke:#28a745,color:#155724,font-weight:bold
+```
 
 Core modules in the AI service:
 
